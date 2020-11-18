@@ -4,6 +4,7 @@ const path = require('path');
 const Discord = require('discord.js');
 const requireAll = require('require-all');
 
+//sdadasjda
 
 const bot = new CommandoClient({
     commandPrefix: 'brlp',
