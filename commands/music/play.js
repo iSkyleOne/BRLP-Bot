@@ -61,6 +61,7 @@ module.exports = class PlayChannelCommand extends Command {
 
 function playMusic(index)
 {
+    chanID = index;
     index.join()
     .then(connection =>{
         statement = true
@@ -79,9 +80,12 @@ function playMusic(index)
     }).catch('error');
 }
 
-function add_song(title, url)
+function add_song(title, url, index)
 {
     song.push({title: title, url: url});
+    if (statement == false){
+        playMusic(index)
+    }
 }
 
 function exporting()
@@ -102,4 +106,5 @@ function leave(){
 module.exports.song = song;
 module.exports.skip = skip;
 module.exports.leave = leave;
+module.exports.add_song = add_song;
 

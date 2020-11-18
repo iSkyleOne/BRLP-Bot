@@ -1,12 +1,12 @@
 const { CommandoClient } = require('discord.js-commando');
+const Discord = require('discord.js');
 const config = require('./config/config');
 const path = require('path');
-const Discord = require('discord.js');
 const requireAll = require('require-all');
 
-//sdadasjda
-
 const bot = new CommandoClient({
+    commandPrefix: 'brlp',
+    owner: '252005826842066945',
     unknownCommandResponse: false,
 });
 
@@ -32,7 +32,6 @@ const files = requireAll({
     filter: /^(?!-)(.+)\.js$/        
   }); 
 bot.on("message",files["messages"].bind(null,bot));
-bot.on("message",files["useful_cmds"].bind(null,bot));
 
 bot.on('ready', () => {
   console.log('BOT - READY');
