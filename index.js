@@ -6,7 +6,7 @@ const requireAll = require('require-all');
 
 const bot = new CommandoClient({
     commandPrefix: config.prefix,
-    owner: config.owner,
+    owner: '252005826842066945',
     unknownCommandResponse: false,
 });
 

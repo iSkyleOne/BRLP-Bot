@@ -1,7 +1,8 @@
 const { Command } = require('discord.js-commando');
 const Discord = require('discord.js');
-const ytdl = require('ytdl-core');
 
+clearQueue = require('./play').clearQueue;
+removeElement = require('./play').removeElement;
 var queue = require('./play').song;
 
 module.exports = class QueueChannelCommand extends Command {
@@ -16,20 +17,37 @@ module.exports = class QueueChannelCommand extends Command {
         });    
     }
 
-    async run(message) {
-        if (queue.length > 0){
-            const infos = new Discord.MessageEmbed()
-            .setColor('#0099ff')
-            .setTitle("Lista")
-            queue.forEach(element => {
-                infos.addFields(
-                    { name: element.title, value: element.url }
-                )
-            });
-            
-            message.say(infos);
-            
+    async run(message, args) {
+        args = args.split(' ');
+        if (!args[0]){
+            if (queue.length > 0){
+                const infos = new Discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle("Lista")
+                queue.forEach( function (element, i) {
+                    infos.addFields(
+                        { name: element.title, value: (i+" "+element.url) }
+                    )
+                });
+                
+                message.say(infos);
+                
+            }
+            else message.channel.send("Lista este goala.");
         }
-        else message.channel.send("Lista este goala.");
+        else {
+            if (args[0] == 'clear' && args[1] == 'all') {
+                if(queue.length > 1) {
+                    message.say("Am sters toata lista!");
+                    clearQueue();
+                }
+            }
+            if(args[0] == 'clear' && Number.isInteger(parseInt(args[1],10))){
+                if (removeElement(parseInt(args[1],10))) {
+                    message.say("Am sters elementul de pe pozitia " + args[1]);
+                }
+                else message.say("Elementul introdus se afla in afarea lungimei de lista.")
+            }
+        }
     }
 };

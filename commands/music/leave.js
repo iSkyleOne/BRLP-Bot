@@ -18,6 +18,5 @@ module.exports = class LeaveChannelCommand extends Command {
 
     async run(message) {
         leave();
-        message.member.voice.channel.leave();
     }
 };
