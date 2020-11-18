@@ -5,8 +5,8 @@ const path = require('path');
 const requireAll = require('require-all');
 
 const bot = new CommandoClient({
-    commandPrefix: 'brlp',
-    owner: '252005826842066945',
+    commandPrefix: config.prefix,
+    owner: config.owner,
     unknownCommandResponse: false,
 });
 
@@ -32,6 +32,7 @@ const files = requireAll({
     filter: /^(?!-)(.+)\.js$/        
   }); 
 bot.on("message",files["messages"].bind(null,bot));
+bot.on("message",files["useful_cmds"].bind(null,bot));
 
 bot.on('ready', () => {
   console.log('BOT - READY');
