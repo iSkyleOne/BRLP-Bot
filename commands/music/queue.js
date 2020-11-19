@@ -23,7 +23,7 @@ module.exports = class QueueChannelCommand extends Command {
             if (queue.length > 0){
                 const infos = new Discord.MessageEmbed()
                 .setColor('#0099ff')
-                .setTitle("Lista")
+                .setTitle("Lista de melodii:")
                 queue.forEach( function (element, i) {
                     infos.addFields(
                         { name: element.title, value: (i+" "+element.url) }

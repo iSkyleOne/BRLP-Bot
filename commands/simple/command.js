@@ -1,6 +1,8 @@
 const { Command } = require('discord.js-commando');
 const Discord = require('discord.js');
 
+const ytpl = require('@distube/ytpl');
+const ytdl = require('ytdl-core');
 
 module.exports = class CommandChannelCommand extends Command {
     constructor(client) {
@@ -8,13 +10,13 @@ module.exports = class CommandChannelCommand extends Command {
             name: 'command',
             group: 'regular',
             memberName: 'command',
-            description: 'iese de pe voice channel',
+            description: '',
             guildOnly: true,
-            argsType: 'single',
+            //argsType: 'single',
         });    
     }
 
-    async run(message) {
-        console.log(message.member.channel)
+    async run(message, url) {
+        
     }
 };

@@ -1,7 +1,10 @@
 const { Command } = require('discord.js-commando');
 const Discord = require('discord.js');
+
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
+const ytpl = require('@distube/ytpl');
+// const ytpl = require('ytpl');
 
 validURL = require('../functions/functions').validURL;
 
@@ -36,9 +39,17 @@ module.exports = class PlayChannelCommand extends Command {
 
         if (args) {
             if(validURL(args)){
-                const videoInfo = await ytdl.getBasicInfo(args);;
-                add_song(videoInfo.videoDetails.title, args, voiceChannel);
-                exporting();
+                if(ytpl.validateID(args)){
+                    playlist(args);
+                    setTimeout( () => {
+                        playMusic(voiceChannel);
+                    }, 3000);
+                }
+                else {
+                    const videoInfo = await ytdl.getBasicInfo(args);;
+                    add_song(videoInfo.videoDetails.title, args, voiceChannel);
+                    exporting();
+                }
             }
             else {
                 search(voiceChannel, args, message);
@@ -64,7 +75,7 @@ async function search(voiceChannel, args, message){
             nextpageRef: filter2.ref,
         }
         const searchResults = await ytsr(args.toString(), options);
-        console.log("error 1")
+        //console.log(searchResults)
         add_song(searchResults.items[1].title, searchResults.items[1].link, voiceChannel);
     }).catch(err => {
         console.error(err);
@@ -74,7 +85,6 @@ async function search(voiceChannel, args, message){
 function playMusic(index)
 {
     chanID = index;
-    console.log("error 2")
     const infos = new Discord.MessageEmbed()
     .setColor('#ff0000')
     .setTitle('Acum ruleaza')
@@ -113,6 +123,39 @@ function playMusic(index)
     }).catch('error');
 }
 
+async function playlist(url)
+{
+    let playlist = await ytpl(url);
+    let playlistInfo = {
+        title: playlist.title,
+        url: playlist.url,
+        totalvids: playlist.total_items,
+        // author: playlist.author.name,
+        // authorUrl: playlist.author.channel_url
+    };
+    for (const item of playlist.items) {
+
+        var songInfo = await ytdl.getInfo(item.url);
+        var songPlaylist = {
+            title: songInfo.videoDetails.title,
+            url: songInfo.videoDetails.video_url,
+            thumbnail: songInfo.videoDetails.thumbnail.thumbnails.pop().url,
+            // duration: songInfo.videoDetails.lengthSeconds,
+            // views: songInfo.videoDetails.viewCount,
+            // author: songInfo.videoDetails.author.name,
+            // authorUrl: songInfo.videoDetails.author.channel_url
+        };
+        song.push({ title: songPlaylist.title, url: songPlaylist.url });
+    }
+    var infos = new Discord.MessageEmbed()
+    .setColor('#e4eb1a')
+    .setTitle('Am adaugat playlist-ul')
+    .addFields(
+        { name: playlistInfo.title, value: playlistInfo.url }
+    )
+    messageChannel.say(infos);
+}
+
 function add_song(title, url, index)
 {
     if (song.length > 0) {
@@ -124,7 +167,6 @@ function add_song(title, url, index)
         )
         messageChannel.say(infos);
     }
-    console.log("error 3")
     song.push({ title: title, url: url });
     if (statement == false){
         playMusic(index)
@@ -133,20 +175,17 @@ function add_song(title, url, index)
 
 function skip(voiceChannel)
 {
-    console.log("error 4")
     song.shift();
     playMusic(voiceChannel);
     exporting();
 }
 
 function clearQueue(){
-    console.log("error 5")
     song.splice(1, song.length)
     exporting();
 }
 
 function removeElement(index) {
-    console.log("error 6")
     if(!(index < 1 || index > song.length)){
         song.splice(index, 1);
         exporting();
@@ -156,7 +195,6 @@ function removeElement(index) {
 }
 
 function moveToBegining(index) {
-    console.log("error 7")
     if (index > 0) {
         const a = song.splice(index,1);
         song.splice(1, 0, a[0]);
